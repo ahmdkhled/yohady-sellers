@@ -9,6 +9,7 @@ import com.example.ecommerceseller.model.Order;
 import com.example.ecommerceseller.model.OrderPayload;
 import com.example.ecommerceseller.model.Product;
 import com.example.ecommerceseller.model.Review;
+import com.example.ecommerceseller.model.Seller;
 import com.example.ecommerceseller.model.TopSeller;
 
 import java.util.ArrayList;
@@ -79,7 +80,18 @@ public interface ApiService {
 
     );
 
-    @GET("sellerlogin.php")
-    Call<LoginResponse> login(@Query("email") String email,@Query("password")String password);
+    @GET(Constants.REGISTER_SELLER)
+    Call<Seller> login(@Query("email") String email,@Query("password")String password);
+
+    @FormUrlEncoded
+    @POST(Constants.REGISTER_SELLER)
+    Call<Seller> registerSeller(@Field("name") String name,
+                                @Field("email") String email,
+                                @Field("password") String password,
+                                @Field("state") String state,
+                                @Field("city") String city,
+                                @Field("address") String address,
+                                @Field("mobile") String mobile,
+                                @Field("market_name") String marketName);
 
 }

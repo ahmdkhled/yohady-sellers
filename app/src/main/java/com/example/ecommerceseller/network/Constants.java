@@ -2,7 +2,9 @@ package com.example.ecommerceseller.network;
 
 public class Constants {
 
+
     static final String BASE_URL="https://yohady.com/";
+    public static final String REGISTER_SELLER =BASE_URL+"sellers.php" ;
     private static final String WOOCOMMERCE_PATH="wp-json/wc/v3/";
     private static final String WORDPRESS_PATH="/wp/v2/";
 
