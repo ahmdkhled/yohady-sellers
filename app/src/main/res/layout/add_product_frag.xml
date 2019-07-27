@@ -8,6 +8,8 @@
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         >
 
         <TextView
@@ -17,8 +19,6 @@
             android:layout_marginStart="5dp"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="5dp"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             android:text="name"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="@id/productName_IL"
@@ -71,31 +71,7 @@
                 android:inputType="numberDecimal"/>
         </android.support.design.widget.TextInputLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="stock"
-            android:textSize="20sp"
-            android:id="@+id/product_stockLabel"
-            app:layout_constraintTop_toTopOf="@id/productStock_IL"
-            app:layout_constraintBottom_toBottomOf="@id/productStock_IL"
-            app:layout_constraintStart_toStartOf="@id/product_priceLabel"
-            app:layout_constraintVertical_bias=".7"/>
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/productDesc_IL"
-            app:layout_constraintTop_toBottomOf="@id/productPrice_IL"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:id="@+id/productStock_IL"
-            android:layout_marginEnd="5dp"
-            android:layout_marginRight="5dp">
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"
-                android:hint="enter product stock" />
-        </android.support.design.widget.TextInputLayout>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -111,7 +87,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toEndOf="@+id/product_descriptionLabel"
-            app:layout_constraintTop_toBottomOf="@id/productStock_IL"
+            app:layout_constraintTop_toBottomOf="@id/productPrice_IL"
             app:layout_constraintEnd_toEndOf="parent"
             android:id="@+id/productDesc_IL"
             android:layout_marginEnd="5dp"
@@ -137,6 +113,7 @@
         <Spinner
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:minHeight="30dp"
             android:id="@+id/product_categorySpinner"
             app:layout_constraintStart_toStartOf="@id/productPrice_IL"
             app:layout_constraintTop_toBottomOf="@id/productDesc_IL"
@@ -156,7 +133,7 @@
             />
        <Button
            android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
+           android:layout_height="35dp"
            android:background="#D31F1F"
            android:id="@+id/uploadMedia"
            android:textColor="#fff"

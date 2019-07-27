@@ -32,27 +32,27 @@ public class OrdersFrag extends Fragment {
         final ProgressBar ordersPB=v.findViewById(R.id.orders_PB);
 
         OrdersViewModel ordersViewModel= ViewModelProviders.of(this).get(OrdersViewModel.class);
-        MutableLiveData<ArrayList<Order>> orders=ordersViewModel.getOrders("1");
-        orders.observe(this, new Observer<ArrayList<Order>>() {
-            @Override
-            public void onChanged(@Nullable ArrayList<Order> orders) {
-                Log.d("VIEWMODELL","on changed "+orders.size());
-                OrdersAdapter ordersAdapter=new OrdersAdapter(getContext(),orders);
-                ordersRecycler.setAdapter(ordersAdapter);
-                ordersRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
-            }
-        });
-
-        ordersViewModel.getIsLoading().observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(@Nullable Boolean aBoolean) {
-                if (aBoolean!=null&&aBoolean){
-                    ordersPB.setVisibility(View.VISIBLE);
-                }else{
-                    ordersPB.setVisibility(View.GONE);
-                }
-            }
-        });
+//        MutableLiveData<ArrayList<Order>> orders=ordersViewModel.getOrders("1");
+//        orders.observe(this, new Observer<ArrayList<Order>>() {
+//            @Override
+//            public void onChanged(@Nullable ArrayList<Order> orders) {
+//                Log.d("VIEWMODELL","on changed "+orders.size());
+//                OrdersAdapter ordersAdapter=new OrdersAdapter(getContext(),orders);
+//                ordersRecycler.setAdapter(ordersAdapter);
+//                ordersRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+//            }
+//        });
+//
+//        ordersViewModel.getIsLoading().observe(this, new Observer<Boolean>() {
+//            @Override
+//            public void onChanged(@Nullable Boolean aBoolean) {
+//                if (aBoolean!=null&&aBoolean){
+//                    ordersPB.setVisibility(View.VISIBLE);
+//                }else{
+//                    ordersPB.setVisibility(View.GONE);
+//                }
+//            }
+//        });
 
         return v;
     }

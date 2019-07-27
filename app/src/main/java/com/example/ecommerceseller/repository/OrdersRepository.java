@@ -26,7 +26,9 @@ public class OrdersRepository {
 
     public MutableLiveData<ArrayList<Order>> getOrders(String marketId){
         isLoading.setValue(true);
-        RetrofitClient.getApiService()
+        RetrofitClient
+                .getInstance()
+                .getApiService()
                 .getOrders(marketId)
                 .enqueue(new Callback<ArrayList<Order>>() {
                     @Override

@@ -13,6 +13,10 @@ public class Image implements Parcelable {
         src = in.readString();
     }
 
+    public Image(String src) {
+        this.src = src;
+    }
+
     public static final Creator<Image> CREATOR = new Creator<Image>() {
         @Override
         public Image createFromParcel(Parcel in) {

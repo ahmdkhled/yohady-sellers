@@ -23,6 +23,12 @@ public class Attribute implements Parcelable {
         options = in.createStringArrayList();
     }
 
+    public Attribute(String name, ArrayList<String> options, boolean visible) {
+        this.name = name;
+        this.options = options;
+        this.visible = visible;
+    }
+
     public static final Creator<Attribute> CREATOR = new Creator<Attribute>() {
         @Override
         public Attribute createFromParcel(Parcel in) {

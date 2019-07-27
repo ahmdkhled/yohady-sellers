@@ -27,7 +27,9 @@ public class CategoriesRepository {
 
 
     public MutableLiveData<ArrayList<Category>> getCategories(){
-        RetrofitClient.getApiService()
+        RetrofitClient
+                .getInstance()
+                .getApiService()
                 .getCategories(null,null,null,null,null,null,
         null,null,null,null,null)
                 .enqueue(new Callback<ArrayList<Category>>() {

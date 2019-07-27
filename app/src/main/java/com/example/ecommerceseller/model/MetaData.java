@@ -8,11 +8,17 @@ public class MetaData implements Parcelable {
     private String key;
     private String value;
 
+    public MetaData(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
     protected MetaData(Parcel in) {
         id = in.readInt();
         key = in.readString();
         value = in.readString();
     }
+
 
     public static final Creator<MetaData> CREATOR = new Creator<MetaData>() {
         @Override

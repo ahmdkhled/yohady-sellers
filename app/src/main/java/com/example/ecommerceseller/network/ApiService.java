@@ -35,6 +35,9 @@ public interface ApiService {
                                          @Query("tag")String tag, @Query("shipping_class") String shipping_class
     );
 
+    @POST(Constants.PRODUCTS_ENDPOINT)
+    Call<Product> uploadProduct(@Body Product product);
+
     @GET(Constants.CATEGORIES_ENDPOINT)
     Call<ArrayList<Category>> getCategories(
             @Query("page")String page,@Query("per_page") String per_page,

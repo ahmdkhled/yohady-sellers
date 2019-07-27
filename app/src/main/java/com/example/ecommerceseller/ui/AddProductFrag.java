@@ -25,7 +25,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ecommerceseller.R;
+import com.example.ecommerceseller.model.Attribute;
 import com.example.ecommerceseller.model.Category;
+import com.example.ecommerceseller.model.Image;
+import com.example.ecommerceseller.model.MetaData;
 import com.example.ecommerceseller.model.Product;
 import com.example.ecommerceseller.utils.FileUtil;
 import com.example.ecommerceseller.utils.SessionManager;
@@ -41,7 +44,7 @@ import okhttp3.RequestBody;
 public class AddProductFrag extends Fragment {
 
     Button uploadProduct,uploadImages;
-    TextInputLayout nameIL,priceIL, stockIL,descIL;
+    TextInputLayout nameIL,priceIL,descIL;
     ProgressBar uploadPB;
     Spinner categoriesSpinner;
     AddProductViewModel addProductViewModel;
@@ -59,14 +62,112 @@ public class AddProductFrag extends Fragment {
         uploadImages =v.findViewById(R.id.uploadMedia);
         nameIL =v.findViewById(R.id.productName_IL);
         priceIL =v.findViewById(R.id.productPrice_IL);
-        stockIL =v.findViewById(R.id.productStock_IL);
         descIL =v.findViewById(R.id.productDesc_IL);
         uploadPB =v.findViewById(R.id.uploadProduct_PB);
         categoriesSpinner =v.findViewById(R.id.product_categorySpinner);
 
+        nameIL.clearFocus();
+        nameIL.getEditText().clearFocus();
         addProductViewModel= ViewModelProviders.of(this).get(AddProductViewModel.class);
         marketId= SessionManager.getInstance(getContext()).getMarketId();
+        marketId=1;
 
+        observeCategories();
+
+        uploadProduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                if (categoryId==-1){
+//                    return;
+//                }
+                if (marketId==-1){
+                    Toast.makeText(getContext(), "register a market first before uploading products !",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (validateInput()){
+                    uploadProduct.setEnabled(false);
+                    String name=nameIL.getEditText().getText().toString();
+                    String price=priceIL.getEditText().getText().toString();
+                    String desc=descIL.getEditText().getText().toString();
+
+                    uploadProduct(name,price,desc);
+
+                    clearFields();
+                }
+
+
+
+            }
+        });
+
+        uploadImages.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                requestPermession();
+            }
+        });
+
+        return v;
+    }
+
+    private void uploadProduct(String name, String price, String desc){
+        Product p =new Product();
+        p.setName(name);
+        p.setRegular_price(price);
+        p.setDescription(desc);
+        p.setType("simple");
+        p.setStatus("pending");
+        
+
+        ArrayList<String> options=new ArrayList<>();
+        options.add(String.valueOf(marketId));
+        Attribute attribute=new Attribute("sellerId",options,false);
+        ArrayList<Attribute> attributes=new ArrayList<>();
+        attributes.add(attribute);
+        p.setAttributes(attributes);
+
+        ArrayList<Category> categories=new ArrayList<>();
+        categories.add(new Category(80));
+        p.setCategories(categories);
+        addProductViewModel.uploadProduct(p);
+        observeUploading();
+        observeProductUploadingError();
+        observeIsProductUploading();
+
+    }
+
+    void observeUploading(){
+        addProductViewModel.uploadProduct()
+                .observe(getActivity(), new Observer<Product>() {
+                    @Override
+                    public void onChanged(@Nullable Product product) {
+                        Toast.makeText(getContext(), "uploaded ", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    void observeProductUploadingError(){
+        addProductViewModel.getProductUploadingError()
+                .observe(getActivity(), new Observer<String>() {
+                    @Override
+                    public void onChanged(@Nullable String s) {
+                        Toast.makeText(getContext(), s,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+    void observeIsProductUploading(){
+        addProductViewModel.getIsProductsUploading()
+                .observe(getActivity(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(@Nullable Boolean aBoolean) {
+
+                    }
+                });
+    }
+
+    void observeCategories(){
         addProductViewModel.getCategories()
                 .observe(this, new Observer<ArrayList<Category>>() {
                     @Override
@@ -78,7 +179,7 @@ public class AddProductFrag extends Fragment {
                             }
                             ArrayAdapter<String> arrayAdapter=new ArrayAdapter<>(getContext(),
                                     android.R.layout.simple_spinner_item,c
-                                    );
+                            );
                             categoriesSpinner.setAdapter(arrayAdapter);
                             categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
@@ -97,42 +198,6 @@ public class AddProductFrag extends Fragment {
 
                     }
                 });
-
-        uploadProduct.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (categoryId==-1){
-                    return;
-                }
-                if (marketId==-1){
-                    Toast.makeText(getContext(), "register a market first before uploading products !",
-                            Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (validateInput()){
-                    uploadProduct.setEnabled(false);
-                    String name=nameIL.getEditText().getText().toString();
-                    String price=priceIL.getEditText().getText().toString();
-                    String stock=stockIL.getEditText().getText().toString();
-                    String desc=descIL.getEditText().getText().toString();
-
-
-                    clearFields();
-                }
-
-
-
-            }
-        });
-
-        uploadImages.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                requestPermession();
-            }
-        });
-
-        return v;
     }
 
     @Override
@@ -212,13 +277,6 @@ public class AddProductFrag extends Fragment {
             priceIL.setError(null);
 
         }
-        if (TextUtils.isEmpty(stockIL.getEditText().getText())){
-            stockIL.setError("Required");
-            pass=false;
-        }else{
-            stockIL.setError(null);
-
-        }
         if (TextUtils.isEmpty(descIL.getEditText().getText())){
             descIL.setError("Required");
             pass=false;
@@ -233,10 +291,8 @@ public class AddProductFrag extends Fragment {
     private void clearFields(){
         nameIL.getEditText().setText("");
         priceIL.getEditText().setText("");
-        stockIL.getEditText().setText("");
         descIL.getEditText().setText("");
         descIL.clearFocus();
-        stockIL.clearFocus();
         descIL.clearFocus();
         nameIL.clearFocus();
     }

@@ -19,6 +19,10 @@ public class Category implements Parcelable {
         image = in.readParcelable(Image.class.getClassLoader());
     }
 
+    public Category(int id) {
+        this.id = id;
+    }
+
     public static final Creator<Category> CREATOR = new Creator<Category>() {
         @Override
         public Category createFromParcel(Parcel in) {

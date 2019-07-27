@@ -24,7 +24,7 @@ public class LoginRepository {
     public MutableLiveData<LoginResponse> login(String email,String password){
         Log.d("LOGINNN", "request: ");
         isLoading.setValue(true);
-        RetrofitClient.getApiService()
+        RetrofitClient.getInstance().getApiService()
                 .login(email,password)
                 .enqueue(new Callback<LoginResponse>() {
                     @Override

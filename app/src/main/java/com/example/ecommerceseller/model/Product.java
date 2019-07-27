@@ -69,6 +69,9 @@ public class Product implements Parcelable {
     private ArrayList<Integer> variations;
 
 
+    public Product() {
+    }
+
     protected Product(Parcel in) {
         id = in.readInt();
         name = in.readString();
@@ -414,6 +417,250 @@ public class Product implements Parcelable {
 
     public ArrayList<Integer> getVariations() {
         return variations;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public void setDate_created(String date_created) {
+        this.date_created = date_created;
+    }
+
+    public void setDate_created_gmt(String date_created_gmt) {
+        this.date_created_gmt = date_created_gmt;
+    }
+
+    public void setDate_modified(String date_modified) {
+        this.date_modified = date_modified;
+    }
+
+    public void setDate_modified_gmt(String date_modified_gmt) {
+        this.date_modified_gmt = date_modified_gmt;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setFeatured(boolean featured) {
+        this.featured = featured;
+    }
+
+    public void setCatalogVisibility(String catalogVisibility) {
+        this.catalogVisibility = catalogVisibility;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setShortDescription(String shortDescription) {
+        this.shortDescription = shortDescription;
+    }
+
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
+    }
+
+    public void setRegular_price(String regular_price) {
+        this.regular_price = regular_price;
+    }
+
+    public void setSale_price(String sale_price) {
+        this.sale_price = sale_price;
+    }
+
+    public void setDateOnSaleFrom(String dateOnSaleFrom) {
+        this.dateOnSaleFrom = dateOnSaleFrom;
+    }
+
+    public void setDateOnSaleFromGmt(String dateOnSaleFromGmt) {
+        this.dateOnSaleFromGmt = dateOnSaleFromGmt;
+    }
+
+    public void setDateOnSaleTo(String dateOnSaleTo) {
+        this.dateOnSaleTo = dateOnSaleTo;
+    }
+
+    public void setDateOnSaleToGmt(String dateOnSaleToGmt) {
+        this.dateOnSaleToGmt = dateOnSaleToGmt;
+    }
+
+    public void setPrice_html(String price_html) {
+        this.price_html = price_html;
+    }
+
+    public void setOn_sale(Boolean on_sale) {
+        this.on_sale = on_sale;
+    }
+
+    public void setPurchasable(Boolean purchasable) {
+        this.purchasable = purchasable;
+    }
+
+    public void setTotalSales(Integer totalSales) {
+        this.totalSales = totalSales;
+    }
+
+    public void setVirtual(Boolean virtual) {
+        this.virtual = virtual;
+    }
+
+    public void setDownloadable(Boolean downloadable) {
+        this.downloadable = downloadable;
+    }
+
+    public void setDownloadLimit(Integer downloadLimit) {
+        this.downloadLimit = downloadLimit;
+    }
+
+    public void setDownloadExpiry(Integer downloadExpiry) {
+        this.downloadExpiry = downloadExpiry;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
+    }
+
+    public void setButtonText(String buttonText) {
+        this.buttonText = buttonText;
+    }
+
+    public void setTaxStatus(String taxStatus) {
+        this.taxStatus = taxStatus;
+    }
+
+    public void setTaxClass(String taxClass) {
+        this.taxClass = taxClass;
+    }
+
+    public void setManageStock(Boolean manageStock) {
+        this.manageStock = manageStock;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public void setStockStatus(String stockStatus) {
+        this.stockStatus = stockStatus;
+    }
+
+    public void setBackorders(String backorders) {
+        this.backorders = backorders;
+    }
+
+    public void setBackordersAllowed(Boolean backordersAllowed) {
+        this.backordersAllowed = backordersAllowed;
+    }
+
+    public void setBackordered(Boolean backordered) {
+        this.backordered = backordered;
+    }
+
+    public void setSoldIndividually(Boolean soldIndividually) {
+        this.soldIndividually = soldIndividually;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public void setShippingRequired(Boolean shippingRequired) {
+        this.shippingRequired = shippingRequired;
+    }
+
+    public void setShippingTaxable(Boolean shippingTaxable) {
+        this.shippingTaxable = shippingTaxable;
+    }
+
+    public void setShippingClass(String shippingClass) {
+        this.shippingClass = shippingClass;
+    }
+
+    public void setShippingClassId(Integer shippingClassId) {
+        this.shippingClassId = shippingClassId;
+    }
+
+    public void setReviewsAllowed(Boolean reviewsAllowed) {
+        this.reviewsAllowed = reviewsAllowed;
+    }
+
+    public void setAverage_rating(String average_rating) {
+        this.average_rating = average_rating;
+    }
+
+    public void setRating_count(int rating_count) {
+        this.rating_count = rating_count;
+    }
+
+    public void setParent_id(int parent_id) {
+        this.parent_id = parent_id;
+    }
+
+    public void setMenu_order(int menu_order) {
+        this.menu_order = menu_order;
+    }
+
+    public void setPurchase_note(String purchase_note) {
+        this.purchase_note = purchase_note;
+    }
+
+    public void setImages(ArrayList<Image> images) {
+        this.images = images;
+    }
+
+    public void setCategories(ArrayList<Category> categories) {
+        this.categories = categories;
+    }
+
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
+    }
+
+    public void setAttributes(ArrayList<Attribute> attributes) {
+        this.attributes = attributes;
+    }
+
+    public void setDefault_attributes(ArrayList<DefaultAttribute> default_attributes) {
+        this.default_attributes = default_attributes;
+    }
+
+    public void setRelated_ids(ArrayList<Integer> related_ids) {
+        this.related_ids = related_ids;
+    }
+
+    public void setUpsell_ids(ArrayList<Integer> upsell_ids) {
+        this.upsell_ids = upsell_ids;
+    }
+
+    public void setCross_sell_ids(ArrayList<Integer> cross_sell_ids) {
+        this.cross_sell_ids = cross_sell_ids;
+    }
+
+    public void setGrouped_products(ArrayList<Integer> grouped_products) {
+        this.grouped_products = grouped_products;
+    }
+
+    public void setVariations(ArrayList<Integer> variations) {
+        this.variations = variations;
     }
 
     @Override
