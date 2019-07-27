@@ -8,9 +8,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ProductsRepository {
+public class CategoriesRepository {
 
-    private static ProductsRepository productsRepository;
+    private static CategoriesRepository categoriesRepository;
 
     private MutableLiveData<ArrayList<Category>> categoriesList=new MutableLiveData<>();
     private MutableLiveData<Boolean> isCategoriesLoading =new MutableLiveData<>();
@@ -18,10 +18,10 @@ public class ProductsRepository {
 
 
 
-    public static ProductsRepository getInstance(){
-        if (productsRepository ==null)
-            productsRepository =new ProductsRepository();
-        return productsRepository;
+    public static CategoriesRepository getInstance(){
+        if (categoriesRepository ==null)
+            categoriesRepository =new CategoriesRepository();
+        return categoriesRepository;
     }
 
 
