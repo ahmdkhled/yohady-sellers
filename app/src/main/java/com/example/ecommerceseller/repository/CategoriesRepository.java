@@ -8,21 +8,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AddProductRepository {
+public class ProductsRepository {
 
-    private static AddProductRepository addProductRepository;
+    private static ProductsRepository productsRepository;
 
     private MutableLiveData<ArrayList<Category>> categoriesList=new MutableLiveData<>();
-
     private MutableLiveData<Boolean> isCategoriesLoading =new MutableLiveData<>();
-
     private MutableLiveData<String> categoriesLoadingError =new MutableLiveData<>();
 
 
-    public static AddProductRepository getInstance(){
-        if (addProductRepository==null)
-            addProductRepository=new AddProductRepository();
-        return addProductRepository;
+
+    public static ProductsRepository getInstance(){
+        if (productsRepository ==null)
+            productsRepository =new ProductsRepository();
+        return productsRepository;
     }
 
 
