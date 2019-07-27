@@ -16,10 +16,16 @@ public class AddProductViewModel extends ViewModel {
 
 
 
-    public MutableLiveData<ArrayList<Category>> getCategories(){
+    public MutableLiveData<ArrayList<Category>> getCategories(String page, String per_page,
+                                                              String parent, String product,
+                                                              String search,
+                                                              String include,String exclude,
+                                                              String slug, String hide_empty,
+                                                              String order_by, String order){
         if (categoriesList==null)
             categoriesList= CategoriesRepository.getInstance()
-                    .getCategories();
+                    .getCategories(page,per_page,parent,product,search,include
+                            ,exclude,slug,hide_empty,order_by,order);
         return categoriesList;
     }
 
@@ -31,6 +37,10 @@ public class AddProductViewModel extends ViewModel {
 
     public MutableLiveData<Product> uploadProduct() {
         return Products;
+    }
+
+    public MutableLiveData<ArrayList<Category>> getCategories() {
+        return categoriesList;
     }
 
     public MutableLiveData<Boolean> getIsCategoriesLoading() {
