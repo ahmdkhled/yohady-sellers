@@ -2,6 +2,7 @@ package com.example.ecommerceseller.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 
 public class Category implements Parcelable {
 
@@ -67,5 +68,15 @@ public class Category implements Parcelable {
         dest.writeString(slug);
         dest.writeInt(parent);
         dest.writeParcelable(image, flags);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj==null)
+            return false;
+        if (!(obj instanceof Category))
+            return false;
+        Category c= (Category) obj;
+        return c.id==this.id;
     }
 }

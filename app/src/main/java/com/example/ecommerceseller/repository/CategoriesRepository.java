@@ -12,7 +12,7 @@ public class CategoriesRepository {
 
     private static CategoriesRepository categoriesRepository;
 
-    private MutableLiveData<ArrayList<Category>> categoriesList=new MutableLiveData<>();
+    private MutableLiveData<ArrayList<Category>> categoriesList;
     private MutableLiveData<Boolean> isCategoriesLoading =new MutableLiveData<>();
     private MutableLiveData<String> categoriesLoadingError =new MutableLiveData<>();
 
@@ -26,24 +26,32 @@ public class CategoriesRepository {
 
 
 
-    public MutableLiveData<ArrayList<Category>> getCategories(){
+    public MutableLiveData<ArrayList<Category>> getCategories(String page, String per_page,
+                                                              String parent, String product,
+                                                              String search,
+                                                              String include,String exclude,
+                                                              String slug, String hide_empty,
+                                                              String order_by, String order){
+        isCategoriesLoading.setValue(true);
+        categoriesList=new MutableLiveData<>();
         RetrofitClient
                 .getInstance()
                 .getApiService()
-                .getCategories(null,null,null,null,null,null,
-        null,null,null,null,null)
+                .getCategories(page,per_page,parent,product,search,include
+                        ,exclude,slug,hide_empty,order_by,order)
                 .enqueue(new Callback<ArrayList<Category>>() {
                     @Override
                     public void onResponse(Call<ArrayList<Category>> call, Response<ArrayList<Category>> response) {
-                        if (response.isSuccessful()){
+                        isCategoriesLoading.setValue(false);
                             ArrayList<Category> list=response.body();
                             categoriesList.setValue(list);
-                        }
+
                     }
 
                     @Override
                     public void onFailure(Call<ArrayList<Category>> call, Throwable t) {
-
+                        isCategoriesLoading.setValue(false);
+                        categoriesLoadingError.setValue(t.getMessage());
                     }
                 });
         return categoriesList;

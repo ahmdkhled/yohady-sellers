@@ -12,23 +12,23 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.ecommerceseller.R;
+import com.example.ecommerceseller.adapter.CategoriesAdapter;
 import com.example.ecommerceseller.model.Attribute;
 import com.example.ecommerceseller.model.Category;
-import com.example.ecommerceseller.model.Image;
-import com.example.ecommerceseller.model.MetaData;
 import com.example.ecommerceseller.model.Product;
 import com.example.ecommerceseller.utils.FileUtil;
 import com.example.ecommerceseller.utils.SessionManager;
@@ -41,17 +41,20 @@ import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 
-public class AddProductFrag extends Fragment {
+public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCategoryItemClicked{
 
     Button uploadProduct,uploadImages;
-    TextInputLayout nameIL,priceIL,descIL;
-    ProgressBar uploadPB;
-    Spinner categoriesSpinner;
+    TextInputLayout nameIL,priceIL,salePriceIL,descIL;
+    ProgressBar ProductUploadPB, categoriesPB;
+    TextView estimatedPrice;
+    RecyclerView categoriesRecycler;
     AddProductViewModel addProductViewModel;
-    int categoryId=-1;
+    ArrayList<Category> categories;
+    String salePrice="";
     int marketId=-1;
     private int PICK_IMAGE=1;
     private int STORAGE_PERMISSION_CODE=12;
+    private CategoriesAdapter categoriesAdapter;
 
     @Nullable
     @Override
@@ -62,24 +65,28 @@ public class AddProductFrag extends Fragment {
         uploadImages =v.findViewById(R.id.uploadMedia);
         nameIL =v.findViewById(R.id.productName_IL);
         priceIL =v.findViewById(R.id.productPrice_IL);
+        salePriceIL =v.findViewById(R.id.productSalePrice_IL);
         descIL =v.findViewById(R.id.productDesc_IL);
-        uploadPB =v.findViewById(R.id.uploadProduct_PB);
-        categoriesSpinner =v.findViewById(R.id.product_categorySpinner);
+        ProductUploadPB =v.findViewById(R.id.uploadProduct_PB);
+        categoriesPB =v.findViewById(R.id.categories_PB);
+        estimatedPrice=v.findViewById(R.id.estimatedPrice);
+        categoriesRecycler=v.findViewById(R.id.categories_recycler);
+        categories=new ArrayList<>();
 
-        nameIL.clearFocus();
-        nameIL.getEditText().clearFocus();
+        clearFields();
         addProductViewModel= ViewModelProviders.of(this).get(AddProductViewModel.class);
         marketId= SessionManager.getInstance(getContext()).getMarketId();
         marketId=1;
 
+        getCategories(1);
         observeCategories();
+        observeCategoriesLoadingError();
+        observeIsCategoriesLoading();
+        showCategories();
 
         uploadProduct.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (categoryId==-1){
-//                    return;
-//                }
                 if (marketId==-1){
                     Toast.makeText(getContext(), "register a market first before uploading products !",
                             Toast.LENGTH_LONG).show();
@@ -89,16 +96,18 @@ public class AddProductFrag extends Fragment {
                     uploadProduct.setEnabled(false);
                     String name=nameIL.getEditText().getText().toString();
                     String price=priceIL.getEditText().getText().toString();
+                    String salePrice=salePriceIL.getEditText().getText().toString();
                     String desc=descIL.getEditText().getText().toString();
 
-                    uploadProduct(name,price,desc);
+                    uploadProduct(name,price,desc,salePrice);
 
                     clearFields();
+                    categoriesAdapter.reset();
                 }
 
-
-
             }
+
+
         });
 
         uploadImages.setOnClickListener(new View.OnClickListener() {
@@ -108,17 +117,66 @@ public class AddProductFrag extends Fragment {
             }
         });
 
+        priceIL.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("TEXTWATCHERR", "onTextChanged: "+s);
+                if (salePrice.length()!=0)
+                    return;
+                if (s.toString().length()==0){
+                    estimatedPrice.setVisibility(View.INVISIBLE);
+                    return;
+                }
+                estimatedPrice.setVisibility(View.VISIBLE);
+                double price=.85*Double.valueOf(s.toString());
+                estimatedPrice.setText(getContext().getString(R.string.estimated_price,String.valueOf(price)));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        salePriceIL.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("TEXTWATCHERR", "onTextChanged: "+s);
+                salePrice=s.toString();
+                if (s.toString().length()==0){
+                    estimatedPrice.setVisibility(View.INVISIBLE);
+                    return;
+                }
+                estimatedPrice.setVisibility(View.VISIBLE);
+                double price=.85*Double.valueOf(s.toString());
+                estimatedPrice.setText(getContext().getString(R.string.estimated_price,String.valueOf(price)));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+
         return v;
     }
 
-    private void uploadProduct(String name, String price, String desc){
+    private void uploadProduct(String name, String price, String desc, String salePrice){
         Product p =new Product();
         p.setName(name);
         p.setRegular_price(price);
+        p.setSale_price(salePrice);
         p.setDescription(desc);
         p.setType("simple");
         p.setStatus("pending");
-        
+
 
         ArrayList<String> options=new ArrayList<>();
         options.add(String.valueOf(marketId));
@@ -127,8 +185,11 @@ public class AddProductFrag extends Fragment {
         attributes.add(attribute);
         p.setAttributes(attributes);
 
-        ArrayList<Category> categories=new ArrayList<>();
-        categories.add(new Category(80));
+        Log.d("CATTTTTTTT","size "+categories.size());
+        for (Category c:categories) {
+            Log.d("CATTTTTTTT", "category id: "+c.getId());
+        }
+
         p.setCategories(categories);
         addProductViewModel.uploadProduct(p);
         observeUploading();
@@ -137,12 +198,21 @@ public class AddProductFrag extends Fragment {
 
     }
 
+    private void getCategories(int page){
+        addProductViewModel
+                .getCategories(String.valueOf(page),null,null,null,null
+                ,null,null,null,null,null,null);
+    }
+
+
     void observeUploading(){
         addProductViewModel.uploadProduct()
                 .observe(getActivity(), new Observer<Product>() {
                     @Override
                     public void onChanged(@Nullable Product product) {
                         Toast.makeText(getContext(), "uploaded ", Toast.LENGTH_SHORT).show();
+                        uploadProduct.setEnabled(true);
+
                     }
                 });
     }
@@ -154,15 +224,22 @@ public class AddProductFrag extends Fragment {
                     public void onChanged(@Nullable String s) {
                         Toast.makeText(getContext(), s,
                                 Toast.LENGTH_SHORT).show();
+                        uploadProduct.setEnabled(true);
+
                     }
                 });
     }
+
     void observeIsProductUploading(){
         addProductViewModel.getIsProductsUploading()
                 .observe(getActivity(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(@Nullable Boolean aBoolean) {
-
+                        Log.d("PROGRSESS", "onChanged: ");
+                        if (aBoolean!=null&&aBoolean)
+                            ProductUploadPB.setVisibility(View.VISIBLE);
+                        else
+                            ProductUploadPB.setVisibility(View.GONE);
                     }
                 });
     }
@@ -173,29 +250,36 @@ public class AddProductFrag extends Fragment {
                     @Override
                     public void onChanged(@Nullable final ArrayList<Category> categories) {
                         if (categories!=null){
-                            ArrayList<String> c=new ArrayList<>();
-                            for (int i = 0; i < categories.size(); i++) {
-                                c.add(categories.get(i).getName());
-                            }
-                            ArrayAdapter<String> arrayAdapter=new ArrayAdapter<>(getContext(),
-                                    android.R.layout.simple_spinner_item,c
-                            );
-                            categoriesSpinner.setAdapter(arrayAdapter);
-                            categoriesSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                @Override
-                                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                    categoryId=categories.get(position).getId();
-                                    Log.d("SPINNERRR","position "+position+" id "+id);
-                                }
-
-                                @Override
-                                public void onNothingSelected(AdapterView<?> parent) {
-                                    Log.d("SPINNERRR","nothing ");
-
-                                }
-                            });
+                            categoriesAdapter.add(categories);
+                        }else{
+                            Toast.makeText(getContext(), "error loading categories", Toast.LENGTH_SHORT).show();
                         }
 
+                    }
+                });
+    }
+
+    void observeCategoriesLoadingError(){
+        addProductViewModel.getCategoriesLoadingError()
+                .observe(getActivity(), new Observer<String>() {
+                    @Override
+                    public void onChanged(@Nullable String s) {
+                        Toast.makeText(getContext(), s,
+                                Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+    }
+
+    void observeIsCategoriesLoading(){
+        addProductViewModel.getIsCategoriesLoading()
+                .observe(getActivity(), new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(@Nullable Boolean aBoolean) {
+                        if (aBoolean!=null&&aBoolean)
+                            categoriesPB.setVisibility(View.VISIBLE);
+                        else
+                            categoriesPB.setVisibility(View.GONE);
                     }
                 });
     }
@@ -259,6 +343,11 @@ public class AddProductFrag extends Fragment {
         }
     }
 
+    private void showCategories(){
+        categoriesAdapter=new CategoriesAdapter(getContext(),new ArrayList<Category>() ,this);
+        categoriesRecycler.setLayoutManager(new LinearLayoutManager(getContext()));
+        categoriesRecycler.setAdapter(categoriesAdapter);
+    }
 
     private boolean validateInput(){
         boolean pass=true;
@@ -291,14 +380,21 @@ public class AddProductFrag extends Fragment {
     private void clearFields(){
         nameIL.getEditText().setText("");
         priceIL.getEditText().setText("");
+        salePriceIL.getEditText().setText("");
         descIL.getEditText().setText("");
-        descIL.clearFocus();
-        descIL.clearFocus();
         nameIL.clearFocus();
+        descIL.clearFocus();
+        priceIL.clearFocus();
+        salePriceIL.clearFocus();
     }
 
 
-
-
-
+    @Override
+    public void onCategoryItemClicked(int id,boolean checked) {
+        if (checked){
+            categories.add(new Category(id));
+        }else{
+            categories.remove(new Category(id));
+        }
+    }
 }

@@ -40,7 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/mainBottomNavigation"
-        android:background="#006064"
+        android:background="@color/colorPrimary"
         app:itemTextColor="@drawable/navigation_item_selector"
         app:itemIconTint="@drawable/navigation_item_selector"
         app:menu="@menu/bottom_navigation_menu"
