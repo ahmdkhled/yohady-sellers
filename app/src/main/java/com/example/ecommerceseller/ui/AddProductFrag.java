@@ -14,13 +14,16 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.example.ecommerceseller.R;
 import com.example.ecommerceseller.adapter.CategoriesAdapter;
@@ -42,7 +45,8 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
 
     Button uploadProduct,uploadImages;
     TextInputLayout nameIL,priceIL,salePriceIL,descIL;
-    ProgressBar ProductUploadPB,categoriiesPB;
+    ProgressBar ProductUploadPB, categoriesPB;
+    TextView estimatedPrice;
     RecyclerView categoriesRecycler;
     AddProductViewModel addProductViewModel;
     ArrayList<Category> categories;
@@ -63,7 +67,8 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
         salePriceIL =v.findViewById(R.id.productSalePrice_IL);
         descIL =v.findViewById(R.id.productDesc_IL);
         ProductUploadPB =v.findViewById(R.id.uploadProduct_PB);
-        categoriiesPB =v.findViewById(R.id.categories_PB);
+        categoriesPB =v.findViewById(R.id.categories_PB);
+        estimatedPrice=v.findViewById(R.id.estimatedPrice);
         categoriesRecycler=v.findViewById(R.id.categories_recycler);
         categories=new ArrayList<>();
 
@@ -99,15 +104,37 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
                     categoriesAdapter.reset();
                 }
 
-
-
             }
+
+
         });
 
         uploadImages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 requestPermession();
+            }
+        });
+
+        priceIL.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("TEXTWATCHERR", "onTextChanged: "+s);
+                if (s.toString().length()==0){
+                    estimatedPrice.setVisibility(View.INVISIBLE);
+                    return;
+                }
+                estimatedPrice.setVisibility(View.VISIBLE);
+                double price=.85*Double.valueOf(s.toString());
+                estimatedPrice.setText(getContext().getString(R.string.estimated_price,String.valueOf(price)));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
             }
         });
 
@@ -223,9 +250,9 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
                     @Override
                     public void onChanged(@Nullable Boolean aBoolean) {
                         if (aBoolean!=null&&aBoolean)
-                            categoriiesPB.setVisibility(View.VISIBLE);
+                            categoriesPB.setVisibility(View.VISIBLE);
                         else
-                            categoriiesPB.setVisibility(View.GONE);
+                            categoriesPB.setVisibility(View.GONE);
                     }
                 });
     }

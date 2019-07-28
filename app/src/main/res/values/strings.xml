@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ecommerce seller</string>
+    <string name="estimated_price">you will get %1$s Egp </string>
+
 </resources>

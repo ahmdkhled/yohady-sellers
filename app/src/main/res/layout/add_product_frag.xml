@@ -160,10 +160,25 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="enter product price"
+                        android:hint="enter product sale price"
                         android:inputType="numberDecimal"/>
 
                 </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/estimatedPrice"
+                    app:layout_constraintTop_toBottomOf="@id/productSalePrice_IL"
+                    app:layout_constraintStart_toStartOf="@id/productSalePrice_IL"
+                    app:layout_constraintEnd_toEndOf="@id/productSalePrice_IL"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:text="you will get 150 Egp"
+                    android:layout_marginEnd="10dp"
+                    android:gravity="end"
+                    android:textColor="#4E4E4E"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="5dp"/>
 
             </android.support.constraint.ConstraintLayout>
 
