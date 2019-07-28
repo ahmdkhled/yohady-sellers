@@ -118,7 +118,7 @@
             android:layout_height="wrap_content"
             android:text="@string/have_no_account_signup"
             android:layout_gravity="center"
-            android:id="@+id/login_txt"
+            android:id="@+id/signup_txt"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/login_btn"

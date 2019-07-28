@@ -5,7 +5,11 @@ import android.util.Log;
 import com.example.ecommerceseller.model.LoginResponse;
 import com.example.ecommerceseller.model.Seller;
 import com.example.ecommerceseller.network.RetrofitClient;
+import com.google.gson.JsonObject;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.net.HttpCookie;
 
 import retrofit2.Call;
@@ -38,14 +42,24 @@ public class LoginRepository {
                     @Override
                     public void onResponse(Call<Seller> call, Response<Seller> response) {
                         if (response.isSuccessful()){
-
+                            Log.d(TAG, "onResponse: successful response");
                             loginResponse.setValue(response.body());
                             isLoading.setValue(false);
+                        }else {
+                            try {
+                                Log.d(TAG, "onResponse: error code "+response.code());
+                                JSONObject error = new JSONObject(response.errorBody().string());
+                                Log.d(TAG, "onResponse: error " + error.getString("message"));
+                            } catch (Exception e) {
+                                Log.d(TAG, "onResponse: catch "+e.getMessage());
+                                e.printStackTrace();
+                            }
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Seller> call, Throwable t) {
+                        Log.d(TAG, "onFailure: failed to login");
                         isLoading.setValue(false);
                         mError.setValue(t.getMessage());
                     }
@@ -76,6 +90,18 @@ public class LoginRepository {
                             if(response.body() != null) {
                                 registerResponse.setValue(response.body());
                             }else Log.d(TAG, "onResponse: seller is null");
+                        }else{
+                            try {
+                                Log.d(TAG, "onResponse: error code "+response.code());
+                                JSONObject error = new JSONObject(response.errorBody().string());
+                                Log.d(TAG, "kkk: ibra " + error.getString("message"));
+                            } catch (Exception e) {
+                                Log.d(TAG, "onResponse: catch");
+                                e.printStackTrace();
+                            }
+
+                            isLoading.setValue(false);
+                            mError.setValue(response.message());
                         }
                     }
 

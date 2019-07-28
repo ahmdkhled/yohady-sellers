@@ -2,8 +2,10 @@ package com.example.ecommerceseller.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
@@ -13,6 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ecommerceseller.R;
@@ -27,8 +30,8 @@ public class RegistrationActivity extends AppCompatActivity {
     AppCompatEditText mEmailTxt,mPasswordTxt,mNameTxt,mMarketNameTxt,mStateTxt,mCityTxt,mAddressTxt,mMobileTxt;
     AppCompatButton mRegisterBtn;
     ProgressBar progressBar;
-
     Toolbar mToolbar;
+    TextView mLoginTxt;
 
     // variables
     private static final String TAG = "RegistrationActivityLogs";
@@ -58,6 +61,7 @@ public class RegistrationActivity extends AppCompatActivity {
         mRegisterBtn = findViewById(R.id.register_btn);
         progressBar = findViewById(R.id.progressBar);
         mToolbar = findViewById(R.id.toolbar);
+        mLoginTxt = findViewById(R.id.login_txt);
 
         // setup toolbar
         setSupportActionBar(mToolbar);
@@ -79,6 +83,15 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
+        // if user has already account
+        mLoginTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent loginIntent = new Intent(RegistrationActivity.this,LoginActivty.class);
+                startActivity(loginIntent);
+                finish();
+            }
+        });
 
     }
 
@@ -110,9 +123,17 @@ public class RegistrationActivity extends AppCompatActivity {
                 if(seller != null){
                     Log.d(TAG, "onChanged:seller not null");
                     Log.d(TAG, "onChanged:seller id is "+seller.getId());
+                    showAlertDialog();
                 }else Log.d(TAG, "onChanged: seller is null");
             }
         });
+    }
+
+    private void showAlertDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Successfully created new account")
+                .setMessage("Please check your inbox and verify your email")
+                .show();
     }
 
     private Seller getSellerInfo() {

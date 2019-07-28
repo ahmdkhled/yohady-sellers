@@ -2,6 +2,7 @@ package com.example.ecommerceseller.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -19,6 +20,7 @@ import android.view.MenuItem;
 import com.example.ecommerceseller.R;
 import com.example.ecommerceseller.adapter.OrdersAdapter;
 import com.example.ecommerceseller.model.Order;
+import com.example.ecommerceseller.utils.SessionManager;
 import com.example.ecommerceseller.viewmodel.MainActivityVM;
 import com.example.ecommerceseller.viewmodel.OrdersViewModel;
 
@@ -39,33 +41,44 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fragmentManager = getSupportFragmentManager();
+        // check user's session
+        SessionManager sessionManager = SessionManager.getInstance(this);
+        if(sessionManager.getId() == -1){
+           // session is over and user has to login
+            Intent loginIntent = new Intent(this,LoginActivty.class);
+            startActivity(loginIntent);
+            finish();
+        }else {
 
-        if(savedInstanceState == null) {
-            fragmentManager.beginTransaction().add(R.id.container, dashboardFrag).hide(dashboardFrag).commit();
-            fragmentManager.beginTransaction().add(R.id.container, addProductFrag).hide(addProductFrag).commit();
-            fragmentManager.beginTransaction().add(R.id.container, ordersFrag).commit();
-        }
+            fragmentManager = getSupportFragmentManager();
 
-        bottomNavigationView=findViewById(R.id.mainBottomNavigation);
-        toolbar=findViewById(R.id.mainToolbar);
-        setSupportActionBar(toolbar);
-        vm=ViewModelProviders.of(this).get(MainActivityVM.class);
-
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId()==R.id.ordersTab){
-                    showFragmenr(ordersFrag);
-                }else if (item.getItemId  ()==R.id.addProductTab){
-                    showFragmenr(addProductFrag);
-                }else if (item.getItemId()==R.id.dashboardTab){
-                    showFragmenr(dashboardFrag);
-                }
-                return true;
+            if (savedInstanceState == null) {
+                fragmentManager.beginTransaction().add(R.id.container, dashboardFrag).hide(dashboardFrag).commit();
+                fragmentManager.beginTransaction().add(R.id.container, addProductFrag).hide(addProductFrag).commit();
+                fragmentManager.beginTransaction().add(R.id.container, ordersFrag).commit();
             }
-        });
+
+            bottomNavigationView = findViewById(R.id.mainBottomNavigation);
+            toolbar = findViewById(R.id.mainToolbar);
+            setSupportActionBar(toolbar);
+            vm = ViewModelProviders.of(this).get(MainActivityVM.class);
+
+
+            bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    if (item.getItemId() == R.id.ordersTab) {
+                        showFragmenr(ordersFrag);
+                    } else if (item.getItemId() == R.id.addProductTab) {
+                        showFragmenr(addProductFrag);
+                    } else if (item.getItemId() == R.id.dashboardTab) {
+                        showFragmenr(dashboardFrag);
+                    }
+                    return true;
+                }
+            });
+
+        }
 
     }
 

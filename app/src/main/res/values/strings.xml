@@ -15,7 +15,7 @@
     <string name="already_have_an_account_login">Already have an account? Login</string>
     <string name="required_field">required field</string>
     <string name="uncompeted_data_msg">please fill all data</string>
-    <string name="login_activity_title">Login</string>
+    <string name="login_activity_title">Login to your account</string>
     <string name="login_btn_txt">Login</string>
-    <string name="have_no_account_signup">don\'t have an accout yet? signUp</string>
+    <string name="have_no_account_signup">don\'t have an account yet? signUp</string>
 </resources>

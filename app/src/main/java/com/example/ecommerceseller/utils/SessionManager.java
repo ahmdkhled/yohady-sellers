@@ -20,7 +20,7 @@ public class SessionManager {
     }
 
     private  SessionManager(Context context) {
-        sharedPreferences=context.getSharedPreferences("prefs",Context.MODE_PRIVATE);
+        sharedPreferences=context.getSharedPreferences("session_pref",Context.MODE_PRIVATE);
     }
 
     public void saveUserSession(int userId,String name,String email){

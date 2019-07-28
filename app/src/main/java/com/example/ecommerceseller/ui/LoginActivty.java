@@ -2,6 +2,7 @@ package com.example.ecommerceseller.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -13,11 +14,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ecommerceseller.R;
 import com.example.ecommerceseller.model.LoginResponse;
 import com.example.ecommerceseller.model.Seller;
+import com.example.ecommerceseller.utils.SessionManager;
 import com.example.ecommerceseller.viewmodel.LoginViewModel;
 
 public class LoginActivty extends AppCompatActivity {
@@ -28,6 +31,7 @@ public class LoginActivty extends AppCompatActivity {
     AppCompatButton mLoginBtn;
     Toolbar mToolbar;
     ProgressBar progressBar;
+    TextView mSignUpTxt;
 
     // variables
     private static final String TAG = "LoginActivityLogs";
@@ -46,10 +50,11 @@ public class LoginActivty extends AppCompatActivity {
         mLoginBtn = findViewById(R.id.login_btn);
         mToolbar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressBar);
+        mSignUpTxt = findViewById(R.id.signup_txt);
 
         // setup toolbar
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(R.string.register_activity_title);
+        getSupportActionBar().setTitle(R.string.login_activity_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         loginViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
@@ -68,6 +73,15 @@ public class LoginActivty extends AppCompatActivity {
         });
 
 
+        // if user doesn't have an account yet
+        mSignUpTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent signUpIntent = new Intent(LoginActivty.this,RegistrationActivity.class);
+                startActivity(signUpIntent);
+
+            }
+        });
     }
 
     private void observeLoginStatus() {
@@ -98,10 +112,18 @@ public class LoginActivty extends AppCompatActivity {
                 if(seller != null){
                     Log.d(TAG, "onChanged:seller not null");
                     Log.d(TAG, "onChanged:seller id is "+seller.getId());
+                    // save seller id
+                    saveSellerSession(seller.getId(),seller.getName(),seller.getEmail());
                 }else Log.d(TAG, "onChanged: seller is null");
             }
         });
     }
+
+    private void saveSellerSession(int id, String name, String email) {
+        SessionManager sessionManager = SessionManager.getInstance(this);
+        sessionManager.saveUserSession(id,name,email);
+    }
+
 
     private boolean isDateCompleted(){
         boolean pass = true;
