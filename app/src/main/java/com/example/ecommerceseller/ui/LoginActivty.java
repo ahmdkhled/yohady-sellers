@@ -101,6 +101,7 @@ public class LoginActivty extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable String s) {
                 Log.d(TAG, "onChanged: failed to login "+s);
+                Toast.makeText(LoginActivty.this, s, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -114,6 +115,7 @@ public class LoginActivty extends AppCompatActivity {
                     Log.d(TAG, "onChanged:seller id is "+seller.getId());
                     // save seller id
                     saveSellerSession(seller.getId(),seller.getName(),seller.getEmail());
+                    startActivity(new Intent(LoginActivty.this,MainActivity.class));
                 }else Log.d(TAG, "onChanged: seller is null");
             }
         });

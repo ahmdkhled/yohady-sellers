@@ -5,6 +5,7 @@ import android.util.Log;
 import com.example.ecommerceseller.model.LoginResponse;
 import com.example.ecommerceseller.model.Seller;
 import com.example.ecommerceseller.network.RetrofitClient;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import org.json.JSONObject;
@@ -41,15 +42,21 @@ public class LoginRepository {
                 .enqueue(new Callback<Seller>() {
                     @Override
                     public void onResponse(Call<Seller> call, Response<Seller> response) {
+                        isLoading.setValue(false);
                         if (response.isSuccessful()){
                             Log.d(TAG, "onResponse: successful response");
                             loginResponse.setValue(response.body());
-                            isLoading.setValue(false);
                         }else {
                             try {
                                 Log.d(TAG, "onResponse: error code "+response.code());
-                                JSONObject error = new JSONObject(response.errorBody().string());
-                                Log.d(TAG, "onResponse: error " + error.getString("message"));
+                                String errorBody = response.errorBody().string();
+                                errorBody = errorBody.substring(7);
+                                Log.d(TAG, "onResponse: error"+errorBody);
+                                mError.setValue("email or password is incorrect or you haven't verified your email ");
+                                Gson gson = new Gson();
+                                Error error = gson.fromJson(errorBody,Error.class);
+                                Log.d(TAG, "onResponse: error msg "+error.getMessage());
+
                             } catch (Exception e) {
                                 Log.d(TAG, "onResponse: catch "+e.getMessage());
                                 e.printStackTrace();
