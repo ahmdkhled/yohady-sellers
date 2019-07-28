@@ -50,6 +50,7 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
     RecyclerView categoriesRecycler;
     AddProductViewModel addProductViewModel;
     ArrayList<Category> categories;
+    String salePrice="";
     int marketId=-1;
     private int PICK_IMAGE=1;
     private int STORAGE_PERMISSION_CODE=12;
@@ -124,6 +125,8 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.d("TEXTWATCHERR", "onTextChanged: "+s);
+                if (salePrice.length()!=0)
+                    return;
                 if (s.toString().length()==0){
                     estimatedPrice.setVisibility(View.INVISIBLE);
                     return;
@@ -137,6 +140,30 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
             public void afterTextChanged(Editable s) {
             }
         });
+
+        salePriceIL.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Log.d("TEXTWATCHERR", "onTextChanged: "+s);
+                salePrice=s.toString();
+                if (s.toString().length()==0){
+                    estimatedPrice.setVisibility(View.INVISIBLE);
+                    return;
+                }
+                estimatedPrice.setVisibility(View.VISIBLE);
+                double price=.85*Double.valueOf(s.toString());
+                estimatedPrice.setText(getContext().getString(R.string.estimated_price,String.valueOf(price)));
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
 
         return v;
     }
