@@ -96,8 +96,7 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
                     uploadProduct(name,price,desc,salePrice);
 
                     clearFields();
-                }else {
-                    Toast.makeText(getContext(), "missing params", Toast.LENGTH_SHORT).show();
+                    categoriesAdapter.reset();
                 }
 
 
@@ -182,6 +181,7 @@ public class AddProductFrag extends Fragment implements CategoriesAdapter.OnCate
                 .observe(getActivity(), new Observer<Boolean>() {
                     @Override
                     public void onChanged(@Nullable Boolean aBoolean) {
+                        Log.d("PROGRSESS", "onChanged: ");
                         if (aBoolean!=null&&aBoolean)
                             ProductUploadPB.setVisibility(View.VISIBLE);
                         else

@@ -20,6 +20,7 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
     private Context context;
     private ArrayList<Category> categories;
     private OnCategoryItemClicked onCategoryItemClicked;
+    private boolean reset=false;
 
 
     public CategoriesAdapter(Context context, ArrayList<Category> categories) {
@@ -43,12 +44,22 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.Ca
 
     @Override
     public void onBindViewHolder(@NonNull CategoryHolder categoryHolder, int i) {
+        if (reset){
+            categoryHolder.categoryCB.setChecked(false);
+            if (i==categories.size()-1)
+                reset=false;
+        }
+
         Category category=categories.get(i);
         categoryHolder.categoryName.setText(category.getName());
     }
 
     public void add(ArrayList<Category> categories){
         this.categories.addAll(categories);
+        notifyDataSetChanged();
+    }
+    public void reset(){
+        reset=true;
         notifyDataSetChanged();
     }
 
